@@ -21,6 +21,13 @@ docker compose up --build
 
 Defaults to a **mock provider** (no API keys required).
 
+### Deploy (hosted)
+
+This repo supports a **single-container deployment** (backend serves the built frontend) via the root `Dockerfile`.
+
+- **Render**: a `render.yaml` is included. Create a new Render “Blueprint” from this repo and deploy.
+- **Any VM**: run the container and mount `/data` for SQLite persistence.
+
 ### Run locally (no Docker)
 
 Backend:

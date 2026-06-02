@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: ollive-inference-logging
+    env: docker
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /healthz
+    envVars:
+      - key: OLLIVE_INGEST_API_KEY
+        generateValue: true
+      - key: OLLIVE_LLM_PROVIDER
+        value: mock
+      - key: OLLIVE_LLM_MODEL
+        value: mock-mini
+      - key: OLLIVE_DB_URL
+        value: sqlite:////data/ollive.sqlite3
+    disk:
+      name: ollive-data
+      mountPath: /data
+      sizeGB: 1
+

@@ -3,11 +3,13 @@ from __future__ import annotations
 import json
 import time
 from datetime import datetime
+from pathlib import Path
 from typing import Iterator
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
+from fastapi.staticfiles import StaticFiles
 from sqlmodel import Session, select, func
 
 from .config import settings
@@ -36,6 +38,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+_DIST_DIR = (Path(__file__).resolve().parents[2] / "frontend_dist").resolve()
+if _DIST_DIR.exists():
+    app.mount("/", StaticFiles(directory=str(_DIST_DIR), html=True), name="frontend")
+
 
 def get_db() -> Iterator[Session]:
     with Session(engine) as session:
@@ -45,6 +51,11 @@ def get_db() -> Iterator[Session]:
 @app.on_event("startup")
 def _startup() -> None:
     init_db()
+
+
+@app.get("/healthz")
+def healthz() -> dict:
+    return {"ok": True}
 
 
 def _require_ingest_key(authorization: str | None) -> None:
